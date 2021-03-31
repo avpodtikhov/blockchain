@@ -155,8 +155,8 @@ class ExampleContractImpl(
         }
     }
 
-    override fun addPrescription(name: String, start_timestamp: Long, end_timestamp: Long, drug_name: String, patient_key: String) {
-        require(doctors.has(call.sender)) {
+    override fun addPrescription(name: String, end_timestamp: Long, drug_name: String, patient_key: String) {
+        require((doctors.has(call.sender)) and (doctors[call.sender].license==true)) {
             "ONLY_DOCTOR_CAN_ADD_INFORMATION"
         }
         require(!drugs_forbidden.has(drug_name)) {
@@ -165,7 +165,7 @@ class ExampleContractImpl(
         val prescription = Prescription(
                 doctor_key = call.sender,
                 name = name,
-                start_timestamp = Timestamp(start_timestamp),
+                start_timestamp = Timestamp(call.timestamp),
                 end_timestamp = Timestamp(end_timestamp),
                 drug_name = drug_name
         )
